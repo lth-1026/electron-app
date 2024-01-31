@@ -3,6 +3,14 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+
+const { Client } = require('@notionhq/client');
+
+const notion = new Client({
+  auth: 'secret_HOa5UpkTWIiIYiCSAD75ikyTzy4Lof6cd5l78QaD0I2', // 여기에 발급받은 토큰을 넣어주세요.
+})
+
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -16,6 +24,25 @@ function createWindow() {
       sandbox: false
     }
   })
+
+  
+  // Notion 데이터를 요청받으면 데이터를 가져와서 Renderer 프로세스에 전달
+  ipcMain.on('get-notion-data', async () => {
+    console.log('get-notion-data!')
+    try {
+      const response = await notion.databases.query({
+        database_id: '42c3642bc808464a81aefd349f73a02e', // 여기에 Notion 데이터베이스의 ID를 넣어주세요.
+      })
+
+      const data = response.results
+
+      // Renderer 프로세스에 Notion 데이터 전달
+      mainWindow.webContents.send('notion-data', data)
+    } catch (error) {
+      console.error('Error fetching Notion data:', error.message)
+    }
+  })
+
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

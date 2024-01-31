@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
+import Child from './components/Child.vue'
+import Tag from './components/Tag.vue'
 
 const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+// Notion 데이터를 요청
+const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
 </script>
 
 <template>
+  <Tag @click="ipcNotionData" />
+  <a @click="ipcNotionData">getNotionData</a>
+  <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
   <div class="creator">Powered by electron-vite</div>
   <div class="text">
