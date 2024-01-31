@@ -36,8 +36,10 @@ function createWindow() {
 
       const data = response.results
 
+      const tag = data.map(item => item.properties.태그.multi_select[0].name)
+
       // Renderer 프로세스에 Notion 데이터 전달
-      mainWindow.webContents.send('notion-data', data)
+      mainWindow.webContents.send('notion-data', tag)
     } catch (error) {
       console.error('Error fetching Notion data:', error.message)
     }

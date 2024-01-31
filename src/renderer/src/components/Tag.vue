@@ -11,6 +11,7 @@ onMounted(() => {
   // Notion 데이터를 받아와서 화면에 표시
   window.electron.ipcRenderer.on('notion-data', (event, data) => {
     notionData.value = data;
+    console.log(data)
   })
 
 })
