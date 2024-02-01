@@ -23,8 +23,8 @@ function createWindow() {
     }
   })
 
-  // Notion 데이터를 요청받으면 데이터를 가져와서 Renderer 프로세스에 전달
-  ipcMain.on('get-notion-data', async () => {
+  // 페이지가 로드된 후에 데이터 전송
+  mainWindow.webContents.once('dom-ready', async () => {
     console.log('get-notion-data!')
     try {
       const response = await notion.databases.query({
@@ -33,10 +33,13 @@ function createWindow() {
 
       const data = response.results
 
-      const tag = data.map((item) => item.properties.태그.multi_select[0].name)
+      const tagObject = data
+        .flatMap((item) => item.properties.태그.multi_select)
+        .map((item) => item.name)
+      const tagName = [...new Set(tagObject)]
 
       // Renderer 프로세스에 Notion 데이터 전달
-      mainWindow.webContents.send('notion-data', tag)
+      mainWindow.webContents.send('notion-data', tagName)
     } catch (error) {
       console.error('Error fetching Notion data:', error.message)
     }

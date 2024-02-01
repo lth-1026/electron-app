@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Versions from './components/Versions.vue'
 import Child from './components/Child.vue'
-import Tag from './components/Tag.vue'
+import Tag from './components/TagSection.vue'
 
 const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 // Notion 데이터를 요청
@@ -9,9 +9,11 @@ const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
 </script>
 
 <template>
-  <Tag @click="ipcNotionData" />
-  <a @click="ipcNotionData">getNotionData</a>
-  <Child />
+  <div class="container">
+    <Tag />
+    <Tag />
+  </div>
+  <!-- <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
   <div class="creator">Powered by electron-vite</div>
   <div class="text">
@@ -27,5 +29,12 @@ const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
       <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
     </div>
   </div>
-  <Versions />
+  <Versions /> -->
 </template>
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: row;
+}
+</style>
