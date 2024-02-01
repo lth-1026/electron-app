@@ -33,13 +33,17 @@ function createWindow() {
 
       const data = response.results
 
-      const tagObject = data
-        .flatMap((item) => item.properties.태그.multi_select)
-        .map((item) => item.name)
-      const tagName = [...new Set(tagObject)]
+      const dataMap = new Map()
+      data.forEach((item) => {
+        item.properties.태그.multi_select.forEach((tagData) => {
+          const tagName = tagData.name
+          if (!dataMap.has(tagName)) dataMap.set(tagName, [])
+          dataMap.get(tagName).push(item)
+        })
+      })
 
       // Renderer 프로세스에 Notion 데이터 전달
-      mainWindow.webContents.send('notion-data', tagName)
+      mainWindow.webContents.send('notion-data', dataMap)
     } catch (error) {
       console.error('Error fetching Notion data:', error.message)
     }

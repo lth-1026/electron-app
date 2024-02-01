@@ -1,19 +1,18 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps(['tagKey'])
+defineProps(['content'])
 //const tagName = ref(tag.value.name)
 </script>
 
 <template>
   <div class="card">
-    {{ tagKey }}
+    {{ content.url }}
   </div>
 </template>
 
 <style scoped>
 .card {
-  height: 40px;
   margin: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;

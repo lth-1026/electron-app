@@ -1,17 +1,37 @@
-<script setup lang="ts">
-import Versions from './components/Versions.vue'
-import Child from './components/Child.vue'
+<script setup>
+//import Versions from './components/Versions.vue'
+//import Child from './components/Child.vue'
 import Tag from './components/TagSection.vue'
+import Content from './components/ContentSection.vue'
+import { onMounted, ref } from 'vue'
 
-const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+//const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 // Notion 데이터를 요청
-const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
+//const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
+
+let map
+const dataMap = ref()
+const tagKeys = ref()
+const tagName = ref()
+
+//컴포넌트가 마운트되었을 때의 동작 설정
+onMounted(() => {
+  // 추가적인 초기화 로직 등이 필요하다면 여기에 작성
+  // Notion 데이터를 받아와서 화면에 표시
+  window.electron.ipcRenderer.on('notion-data', (event, data) => {
+    map = data
+    console.log(data)
+    dataMap.value = data
+    tagKeys.value = Array.from(data.keys())
+    //tagKeys.value = Array.from(data.keys())
+  })
+})
 </script>
 
 <template>
   <div class="container">
-    <Tag />
-    <Tag />
+    <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = map.get(name))" />
+    <Content :contents="tagName" />
   </div>
   <!-- <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
