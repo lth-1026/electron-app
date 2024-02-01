@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-
 const notionData = ref('test')
-
 
 //컴포넌트가 마운트되었을 때의 동작 설정
 onMounted(() => {
@@ -10,10 +8,9 @@ onMounted(() => {
 
   // Notion 데이터를 받아와서 화면에 표시
   window.electron.ipcRenderer.on('notion-data', (event, data) => {
-    notionData.value = data;
+    notionData.value = data
     console.log(data)
   })
-
 })
 </script>
 
