@@ -1,31 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-
 defineProps(['content'])
 //const tagName = ref(tag.value.name)
 </script>
 
 <template>
   <div class="card">
-    {{ content.url }}
+    {{ content.properties.이름.title[0].plain_text }}
   </div>
 </template>
 
 <style scoped>
-.card {
-  margin: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  border-radius: 5px; /* 5px rounded corners */
-}
-
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-}
-
-/* Add some padding inside the card container */
-.container {
-  padding: 2px 16px;
-}
+@import '@renderer/assets/card.css';
 </style>

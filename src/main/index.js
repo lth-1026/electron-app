@@ -37,8 +37,12 @@ function createWindow() {
       data.forEach((item) => {
         item.properties.태그.multi_select.forEach((tagData) => {
           const tagName = tagData.name
+          let finalData = item
+          finalData.properties.이름.title = item.properties.이름.title.filter(
+            (mItem) => mItem.plain_text
+          )
           if (!dataMap.has(tagName)) dataMap.set(tagName, [])
-          dataMap.get(tagName).push(item)
+          dataMap.get(tagName).push(finalData)
         })
       })
 
