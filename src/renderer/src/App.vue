@@ -3,6 +3,7 @@
 //import Child from './components/Child.vue'
 import Tag from './components/TagSection.vue'
 import Content from './components/ContentSection.vue'
+import ProposalSection from './components/ProposalSection.vue'
 import { onMounted, ref } from 'vue'
 
 //const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -30,8 +31,9 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = map.get(name))" />
-    <Content :contents="tagName" />
+    <!-- <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = map.get(name))" /> -->
+    <!-- <Content :contents="tagName" /> -->
+    <ProposalSection />
   </div>
   <!-- <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
