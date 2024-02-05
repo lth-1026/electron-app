@@ -4,6 +4,10 @@ import draggable from 'vuedraggable'
 
 const props = defineProps(['contents'])
 const proposalArray = ref([])
+
+function remove(event) {
+  proposalArray.value = proposalArray.value.filter((item) => item.id !== event.target.id)
+}
 </script>
 
 <template>
@@ -26,6 +30,7 @@ const proposalArray = ref([])
       <template #item="{ element }">
         <div class="list-group-item card">
           {{ element.properties.이름.title[0].plain_text }}
+          <span :id="element.id" @click="remove"> x </span>
         </div>
       </template>
     </draggable>
