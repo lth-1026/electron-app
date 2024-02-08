@@ -73,7 +73,7 @@ async function authorize() {
 async function listSlides(auth) {
   const slidesApi = google.slides({ version: 'v1', auth })
   const res = await slidesApi.presentations.get({
-    presentationId: '1EAYk18WDjIG-zp_0vLm3CsfQh_i8eXc67Jo2O9C6Vuc'
+    presentationId: '1rTIVxNWMTb7fspI7Xf7N5CNHNJYAKqbKIfUoHxAydJA'
   })
   const slides = res.data.slides
   if (!slides || slides.length === 0) {
