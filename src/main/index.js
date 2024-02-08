@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { getPPT } from './ppt.js'
 
 const { Client } = require('@notionhq/client')
 
@@ -45,6 +46,8 @@ function createWindow() {
           dataMap.get(tagName).push(finalData)
         })
       })
+
+      getPPT(dataMap.get('Dinner').map((item) => item.properties.ppt.files[0].file.url))
 
       // Renderer 프로세스에 Notion 데이터 전달
       mainWindow.webContents.send('notion-data', dataMap)
@@ -108,3 +111,4 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+//getPPT('')

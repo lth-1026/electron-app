@@ -20,8 +20,10 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "@google-cloud/local-auth": "^2.1.0",
     "@notionhq/client": "^2.2.14",
     "electron-updater": "^6.1.7",
+    "googleapis": "^105.0.0",
     "nodejs-pptx": "^1.2.4",
     "officegen": "^0.6.5",
     "pptxgenjs": "^3.12.0",
