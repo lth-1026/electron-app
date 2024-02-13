@@ -2,9 +2,8 @@
 //import Versions from './components/Versions.vue'
 //import Child from './components/Child.vue'
 import Tag from './components/TagSection.vue'
-import Content from './components/ContentSection.vue'
-import ProposalSection from './components/ProposalSection.vue'
 import ContentAndProposalSection from './components/ContentAndProposalSection.vue'
+import GenerationSection from './components/GenerationSection.vue'
 
 import { onMounted, ref } from 'vue'
 
@@ -35,8 +34,7 @@ onMounted(() => {
   <div class="container">
     <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = Array.from(map.get(name)))" />
     <ContentAndProposalSection :contents="tagName" />
-    <!-- <Content :contents="tagName" /> -->
-    <!-- <ProposalSection /> -->
+    <GenerationSection />
   </div>
   <!-- <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
@@ -59,7 +57,8 @@ onMounted(() => {
 
 <style scoped>
 .container {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto 50px;
 }
 </style>

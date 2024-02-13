@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { getPPT } from './ppt.js'
 import { mergePDFs } from './pdf.js'
 
 const { Client } = require('@notionhq/client')
@@ -48,11 +47,6 @@ function createWindow() {
         })
       })
 
-      getPPT(dataMap.get('Dinner').map((item) => item.properties.ppt.files[0].file.url))
-      mergePDFs(
-        dataMap.get('Dinner').map((item) => item.properties.pdf.files[0].file.url),
-        'merged_output.pdf'
-      ).catch((error) => console.error('Error merging PDFs:', error))
       // Renderer 프로세스에 Notion 데이터 전달
       mainWindow.webContents.send('notion-data', dataMap)
     } catch (error) {
@@ -116,3 +110,11 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 //getPPT('')
+
+ipcMain.on('proposal-data', (event, args) => {
+  console.log(args)
+  mergePDFs(
+    args.map((item) => item.properties.pdf.files[0].file.url),
+    'merged_output.pdf'
+  ).catch((error) => console.error('Error merging PDFs:', error))
+})
