@@ -54,9 +54,11 @@ function makeProposal() {
 }
 .content-section {
   flex: 1;
+  overflow: scroll;
 }
 
 .proposal-section {
   flex: 1;
+  overflow: scroll;
 }
 </style>

@@ -25,6 +25,7 @@
     "electron-updater": "^6.1.7",
     "googleapis": "^105.0.0",
     "nodejs-pptx": "^1.2.4",
+    "normalize.css": "^8.0.1",
     "officegen": "^0.6.5",
     "pdf-lib": "^1.17.1",
     "pptxgenjs": "^3.12.0",
