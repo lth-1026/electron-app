@@ -23,6 +23,7 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@notionhq/client": "^2.2.14",
     "electron-updater": "^6.1.7",
+    "exceljs": "^4.4.0",
     "googleapis": "^105.0.0",
     "nodejs-pptx": "^1.2.4",
     "normalize.css": "^8.0.1",
