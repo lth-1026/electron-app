@@ -1,8 +1,10 @@
-<script setup></script>
+<script setup>
+defineEmits(['make-proposal'])
+</script>
 
 <template>
   <div class="footer">
-    <div>버튼</div>
+    <div @click="$emit('make-proposal')">버튼</div>
   </div>
 </template>
 

@@ -1,17 +1,12 @@
+<!-- eslint-disable vue/require-prop-types -->
 <script setup>
-import { ref, toRaw } from 'vue'
 import draggable from 'vuedraggable'
 
 const props = defineProps(['contents'])
-const proposalArray = ref([])
+const proposalArray = defineModel()
 
 function remove(event) {
   proposalArray.value = proposalArray.value.filter((item) => item.id !== event.target.id)
-}
-
-function makeProposal() {
-  console.log(toRaw(proposalArray.value))
-  window.electron.ipcRenderer.send('proposal-data', toRaw(proposalArray.value))
 }
 </script>
 
@@ -41,7 +36,6 @@ function makeProposal() {
         </template>
       </draggable>
     </div>
-    <div @click="makeProposal">버튼</div>
   </div>
 </template>
 

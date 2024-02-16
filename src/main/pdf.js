@@ -20,8 +20,4 @@ async function mergePDFs(urls, outputPath) {
   console.log('PDF files merged successfully!')
 }
 
-// Usage example
-const inputPDFs = ['input1.pdf', 'input2.pdf']
-const outputPDF = 'merged_output.pdf'
-
 export { mergePDFs }

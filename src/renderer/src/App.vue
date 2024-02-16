@@ -5,7 +5,7 @@ import Tag from './components/TagSection.vue'
 import ContentAndProposalSection from './components/ContentAndProposalSection.vue'
 import GenerationSection from './components/GenerationSection.vue'
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, toRaw } from 'vue'
 
 //const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 // Notion 데이터를 요청
@@ -15,6 +15,8 @@ let map
 const dataMap = ref()
 const tagKeys = ref()
 const tagName = ref()
+
+const proposalArray = ref([])
 
 //컴포넌트가 마운트되었을 때의 동작 설정
 onMounted(() => {
@@ -28,13 +30,18 @@ onMounted(() => {
     //tagKeys.value = Array.from(data.keys())
   })
 })
+
+function makeProposal() {
+  console.log(toRaw(proposalArray.value))
+  window.electron.ipcRenderer.send('proposal-data', toRaw(proposalArray.value))
+}
 </script>
 
 <template>
   <div class="container">
     <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = Array.from(map.get(name)))" />
-    <ContentAndProposalSection :contents="tagName" />
-    <GenerationSection />
+    <ContentAndProposalSection v-model="proposalArray" :contents="tagName" />
+    <GenerationSection @make-proposal="makeProposal" />
   </div>
   <!-- <Child />
   <img alt="logo" class="logo" src="./assets/electron.svg" />
