@@ -1,11 +1,10 @@
 <script setup>
-defineProps(['tagKey'])
-//const tagName = ref(tag.value.name)
+defineProps(['categoryKey'])
 </script>
 
 <template>
   <div class="card">
-    {{ tagKey }}
+    {{ categoryKey }}
   </div>
 </template>
 

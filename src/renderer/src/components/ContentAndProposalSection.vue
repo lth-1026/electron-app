@@ -3,6 +3,7 @@
 import draggable from 'vuedraggable'
 
 const props = defineProps(['contents'])
+console.log(props.contents)
 const proposalArray = defineModel()
 
 function remove(event) {
@@ -21,7 +22,7 @@ function remove(event) {
       >
         <template #item="{ element }">
           <div class="list-group-item card">
-            {{ element.properties.이름.title[0].plain_text }}
+            {{ element.properties.name.title[0].plain_text }}
           </div>
         </template>
       </draggable>
@@ -30,7 +31,7 @@ function remove(event) {
       <draggable class="dragArea list-group" :list="proposalArray" group="properties" item-key="id">
         <template #item="{ element }">
           <div class="list-group-item card">
-            {{ element.properties.이름.title[0].plain_text }}
+            {{ element.properties.name.title[0].plain_text }}
             <span :id="element.id" @click="remove"> x </span>
           </div>
         </template>

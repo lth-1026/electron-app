@@ -5,7 +5,7 @@ defineProps(['content'])
 
 <template>
   <div class="card">
-    {{ content.properties.이름.title[0].plain_text }}
+    {{ content.properties.name.title[0].plain_text }}
   </div>
 </template>
 

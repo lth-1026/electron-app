@@ -1,7 +1,7 @@
 <script setup>
 //import Versions from './components/Versions.vue'
 //import Child from './components/Child.vue'
-import Tag from './components/TagSection.vue'
+import Category from './components/CategorySection.vue'
 import ContentAndProposalSection from './components/ContentAndProposalSection.vue'
 import GenerationSection from './components/GenerationSection.vue'
 
@@ -13,8 +13,8 @@ import { onMounted, ref, toRaw } from 'vue'
 
 let map
 const dataMap = ref()
-const tagKeys = ref()
-const tagName = ref()
+const categoryKeys = ref()
+const categoryName = ref()
 
 const proposalArray = ref([])
 
@@ -26,7 +26,7 @@ onMounted(() => {
     map = data
     console.log(data)
     dataMap.value = data
-    tagKeys.value = Array.from(data.keys())
+    categoryKeys.value = Array.from(data.keys())
     //tagKeys.value = Array.from(data.keys())
   })
 })
@@ -39,8 +39,11 @@ function makeProposal() {
 
 <template>
   <div class="container">
-    <Tag :tag-keys="tagKeys" @clicked-tag="(name) => (tagName = Array.from(map.get(name)))" />
-    <ContentAndProposalSection v-model="proposalArray" :contents="tagName" />
+    <Category
+      :category-keys="categoryKeys"
+      @clicked-category="(name) => (categoryName = Array.from(map.get(name)))"
+    />
+    <ContentAndProposalSection v-model="proposalArray" :contents="categoryName" />
     <GenerationSection @make-proposal="makeProposal" />
   </div>
   <!-- <Child />
