@@ -6,8 +6,12 @@ import { mergePDFs } from './pdf.js'
 
 const { Client } = require('@notionhq/client')
 
+//todo: 파일에서 가져오는 것으로 바꿀 것
+const token = 'secret_HOa5UpkTWIiIYiCSAD75ikyTzy4Lof6cd5l78QaD0I2'
+const databaseId = '42c3642bc808464a81aefd349f73a02e'
+
 const notion = new Client({
-  auth: 'secret_HOa5UpkTWIiIYiCSAD75ikyTzy4Lof6cd5l78QaD0I2' // 여기에 발급받은 토큰을 넣어주세요.
+  auth: token
 })
 
 function createWindow() {
@@ -24,34 +28,84 @@ function createWindow() {
     }
   })
 
+  async function getNotionData() {
+    //노션에서 데이터 받아오기
+    const query = {
+      database_id: databaseId
+    }
+
+    let has_more = true
+    const data = []
+
+    while (has_more) {
+      const response = await requestToNotionDatabase(query)
+      data.push(...response.results)
+
+      //만약 다음 페이지가 존재한다면 has_more과 다음 페이지 주소 받아와 query 넣은 후 notion에 데이터 요청
+      has_more = response.has_more
+      if (has_more) {
+        query.start_cursor = response.next_cursor
+      }
+    }
+
+    return data
+  }
+
+  async function requestToNotionDatabase(query) {
+    return await notion.databases.query(query).catch((e) => console.error(e))
+  }
+
+  function processData(data) {
+    console.log(data)
+    const dataMap = new Map()
+    data.forEach((item) => {
+      //catagory
+      item.properties.category.multi_select.forEach((_category) => {
+        const category = _category.name
+
+        //final 데이터 이름 삽입
+        item.properties.name.title = item.properties.name.title.filter((name) => name.plain_text)
+
+        //category가 key에 없다면 value를 새로운 map으로 생성
+        if (!dataMap.has(category)) dataMap.set(category, new Map())
+
+        //tag
+        const tagMultiSelect = item.properties.tag.multi_select
+        const currentCategory = dataMap.get(category)
+
+        //만약 tag가 없다면 태그 없음으로 dataMap에 넣고 tag가 있다면 태그에 해당하는 내용 넣기
+        if (tagMultiSelect.length == 0) {
+          const tag = '태그 없음'
+          pushToDataMap(tag, item)
+        } else {
+          item.properties.tag.multi_select.forEach((_tag) => {
+            const tag = _tag.name
+            pushToDataMap(tag, item)
+          })
+        }
+
+        function pushToDataMap(tag, item) {
+          if (!currentCategory.has(tag)) currentCategory.set(tag, [])
+          currentCategory.get(tag).push(item)
+        }
+      })
+    })
+
+    console.log(dataMap)
+
+    return dataMap
+  }
+
   // 페이지가 로드된 후에 데이터 전송
   mainWindow.webContents.once('dom-ready', async () => {
     console.log('get-notion-data!')
-    try {
-      const response = await notion.databases.query({
-        database_id: '42c3642bc808464a81aefd349f73a02e' // 여기에 Notion 데이터베이스의 ID를 넣어주세요.
-      })
 
-      const data = response.results
+    const data = await getNotionData()
 
-      const dataMap = new Map()
-      data.forEach((item) => {
-        item.properties.태그.multi_select.forEach((tagData) => {
-          const tagName = tagData.name
-          let finalData = item
-          finalData.properties.이름.title = item.properties.이름.title.filter(
-            (mItem) => mItem.plain_text
-          )
-          if (!dataMap.has(tagName)) dataMap.set(tagName, [])
-          dataMap.get(tagName).push(finalData)
-        })
-      })
+    const dataMap = processData(data)
 
-      // Renderer 프로세스에 Notion 데이터 전달
-      mainWindow.webContents.send('notion-data', dataMap)
-    } catch (error) {
-      console.error('Error fetching Notion data:', error.message)
-    }
+    // Renderer 프로세스에 Notion 데이터 전달
+    mainWindow.webContents.send('notion-data', dataMap)
   })
 
   mainWindow.on('ready-to-show', () => {
