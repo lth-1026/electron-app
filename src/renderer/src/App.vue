@@ -1,21 +1,15 @@
 <script setup>
-//import Versions from './components/Versions.vue'
-//import Child from './components/Child.vue'
 import Category from './components/CategorySection.vue'
 import ContentAndProposalSection from './components/ContentAndProposalSection.vue'
 import GenerationSection from './components/GenerationSection.vue'
 
 import { onMounted, ref, toRaw } from 'vue'
 
-//const ipcHandle = () => window.electron.ipcRenderer.send('ping')
-// Notion 데이터를 요청
-//const ipcNotionData = () => window.electron.ipcRenderer.send('get-notion-data')
-
-let map
 const dataMap = ref()
 const categoryKeys = ref()
-const categoryName = ref()
-
+const categoryData = ref()
+const selectedCategory = ref()
+const tags = ref()
 const proposalArray = ref([])
 
 //컴포넌트가 마운트되었을 때의 동작 설정
@@ -23,14 +17,41 @@ onMounted(() => {
   // 추가적인 초기화 로직 등이 필요하다면 여기에 작성
   // Notion 데이터를 받아와서 화면에 표시
   window.electron.ipcRenderer.on('notion-data', (event, data) => {
-    map = data
     console.log(data)
     dataMap.value = data
     categoryKeys.value = Array.from(data.keys())
-    //tagKeys.value = Array.from(data.keys())
   })
 })
 
+function getCategoryData(category) {
+  selectedCategory.value = category
+
+  const tagKeys = Array.from(dataMap.value.get(category).keys())
+  tags.value = tagKeys.map((tag) => ({
+    name: tag,
+    selected: true
+  }))
+  getDataByTag(category, tags)
+}
+
+function changeTag(changedtags) {
+  getDataByTag(selectedCategory.value, changedtags)
+}
+
+//태그에 해당하는 데이터 가져오기
+function getDataByTag(category, tags) {
+  const data = []
+  const selectedTags = tags.value
+    .filter((tag) => tag.selected)
+    .map((tag) => {
+      data.push(...dataMap.value.get(category).get(tag.name))
+    })
+  console.log(selectedTags)
+
+  categoryData.value = data
+}
+
+//제안서 생성하기
 function makeProposal() {
   console.log(toRaw(proposalArray.value))
   window.electron.ipcRenderer.send('proposal-data', toRaw(proposalArray.value))
@@ -39,30 +60,15 @@ function makeProposal() {
 
 <template>
   <div class="container">
-    <Category
-      :category-keys="categoryKeys"
-      @clicked-category="(name) => (categoryName = Array.from(map.get(name)))"
+    <Category :category-keys="categoryKeys" @clicked-category="getCategoryData" />
+    <ContentAndProposalSection
+      v-model:proposalArray="proposalArray"
+      v-model:tags="tags"
+      :contents="categoryData"
+      @change-tag="changeTag"
     />
-    <ContentAndProposalSection v-model="proposalArray" :contents="categoryName" />
     <GenerationSection @make-proposal="makeProposal" />
   </div>
-  <!-- <Child />
-  <img alt="logo" class="logo" src="./assets/electron.svg" />
-  <div class="creator">Powered by electron-vite</div>
-  <div class="text">
-    Build an Electron app with
-    <span class="vue">Vue</span>
-  </div>
-  <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
-  <div class="actions">
-    <div class="action">
-      <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
-    </div>
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
-    </div>
-  </div>
-  <Versions /> -->
 </template>
 
 <style scoped>

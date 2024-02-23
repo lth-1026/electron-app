@@ -2,17 +2,37 @@
 <script setup>
 import draggable from 'vuedraggable'
 
+const emit = defineEmits(['changeTag'])
 const props = defineProps(['contents'])
-console.log(props.contents)
-const proposalArray = defineModel()
+
+const tags = defineModel('tags')
+const proposalArray = defineModel('proposalArray')
 
 function remove(event) {
   proposalArray.value = proposalArray.value.filter((item) => item.id !== event.target.id)
+}
+
+function changeTag() {
+  emit('changeTag', tags)
+}
+
+function removeAllTags() {
+  tags.value.forEach((tag) => {
+    tag.selected = false
+  })
+  changeTag()
 }
 </script>
 
 <template>
   <div id="flex-container">
+    <div>
+      <li v-for="tag in tags" :key="tag.name">
+        <input v-model="tag.selected" type="checkbox" @change="changeTag" />
+        {{ tag.name }}
+      </li>
+      <button @click="removeAllTags">태그 지우기</button>
+    </div>
     <div class="content-section">
       <draggable
         class="dragArea list-group"
