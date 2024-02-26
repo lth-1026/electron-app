@@ -4,14 +4,18 @@ defineEmits(['make-proposal'])
 
 <template>
   <div class="footer">
-    <div @click="$emit('make-proposal')">버튼</div>
+    <button class="button" @click="$emit('make-proposal')">제안서 생성하기</button>
   </div>
 </template>
 
 <style scoped>
+@import '@renderer/assets/button.css';
+
 .footer {
   background-color: bisque;
   grid-column: 1 / 3;
   height: 50px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
