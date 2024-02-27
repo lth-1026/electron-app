@@ -1,7 +1,5 @@
 <!-- eslint-disable vue/require-prop-types -->
 <script setup>
-import { onMounted, ref, toRaw } from 'vue'
-
 import draggable from 'vuedraggable'
 import Tag from './Tag.vue'
 
@@ -36,19 +34,6 @@ function removeAllTags() {
 
 <template>
   <div id="flex-container">
-    <!-- <div>
-      <div v-for="tag in tags" :key="tag.name">
-        <input
-          :id="tag.name"
-          v-model="tag.selected"
-          type="checkbox"
-          style="display: none"
-          @change="changeTag"
-        />
-        <label :for="tag.name"> <Tag class="tag" :tag-name="tag.name" /></label>
-      </div>
-      <button @click="removeAllTags">태그 지우기</button>
-    </div> -->
     <div class="content-section">
       <div class="tag-section">
         <div class="tag-contents">
@@ -112,6 +97,13 @@ function removeAllTags() {
 .tag-section {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  background-color: lightgray;
+  border-radius: 5px;
+  padding: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  margin: 8px;
 }
 
 .tag-contents {

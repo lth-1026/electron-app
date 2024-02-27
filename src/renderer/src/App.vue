@@ -11,6 +11,7 @@ const categoryData = ref()
 const selectedCategory = ref()
 const tags = ref()
 const proposalArray = ref([])
+const proposalLength = ref()
 
 //컴포넌트가 마운트되었을 때의 동작 설정
 onMounted(() => {
@@ -54,6 +55,7 @@ function getDataByTag(category, tags) {
 //제안서 생성하기
 function makeProposal() {
   console.log(toRaw(proposalArray.value))
+  proposalLength.value = proposalArray.value.length
   window.electron.ipcRenderer.send('proposal-data', toRaw(proposalArray.value))
 }
 </script>
@@ -67,7 +69,7 @@ function makeProposal() {
       :contents="categoryData"
       @change-tag="changeTag"
     />
-    <GenerationSection @make-proposal="makeProposal" />
+    <GenerationSection :proposal-length="proposalLength" @make-proposal="makeProposal" />
   </div>
 </template>
 
@@ -76,5 +78,6 @@ function makeProposal() {
   display: grid;
   grid-template-columns: 1fr 3fr;
   grid-template-rows: calc(100vh - 50px) max-content;
+  background-color: #f3f3f3;
 }
 </style>

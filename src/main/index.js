@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mergePDFs } from './pdf.js'
+import { downloadPPTs } from './ppt.js'
 
 const { Client } = require('@notionhq/client')
 
@@ -171,4 +172,12 @@ ipcMain.on('proposal-data', (event, args) => {
     args.map((item) => item.properties.pdf.files[0].file.url),
     'merged_output.pdf'
   ).catch((error) => console.error('Error merging PDFs:', error))
+
+  downloadPPTs(
+    args.map((item, index) => ({
+      index: index,
+      url: item.properties.ppt.files[0].file.url
+    })),
+    event
+  )
 })

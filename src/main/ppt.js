@@ -1,55 +1,45 @@
 const fs = require('fs')
-const PPTX = require('nodejs-pptx')
+const { exec } = require('child_process')
 
-async function getPPT(pptUrls) {
-  const pptContents = await Promise.all(
-    pptUrls.map((url) => fetch(url).then((res) => res.arrayBuffer()))
-  )
+const dir = 'pptFiles/'
+// PowerPoint 실행 명령어
+const powerpointCommand = 'start powerpnt.exe "ppt_merge.pptm"'
 
-  const pptx = new PPTX.Composer()
-  const pptFactory = pptx.presentation.powerPointFactory
-  await pptFactory.loadFromRawFileData(pptContents[1])
+async function downloadPPTs(ppts, event) {
+  try {
+    //기존 디렉토리 삭제
+    fs.rmSync(dir, { recursive: true, force: true })
+    // 디렉토리가 없으면 생성
+    fs.mkdirSync(dir, { recursive: true })
 
-  const pptFactory2 = new PPTX.Composer().presentation.powerPointFactory
-  await pptFactory2.loadFromRawFileData(pptContents[0])
-
-  console.log(pptFactory.slides)
-  console.log(pptFactory2)
-
-  pptFactory.content[`ppt/media/image3.jpeg`] = ''
-  pptFactory.content[`ppt/media/image4.jpeg`] = ''
-  pptFactory.content[`ppt/media/image5.jpeg`] = ''
-
-  // pptFactory.content[`docProps/app.xml`].Properties.Slides
-
-  // pptFactory.slides.slide3 = pptFactory2.slides.slide1
-  // pptFactory.content[`ppt/slides/slide3.xml`] = pptFactory2.content[`ppt/slides/slide1.xml`]
-  // pptFactory.content[`ppt/slides/_rels/slide3.xml.rels`] =
-  //   pptFactory2.content[`ppt/slides/_rels/slide1.xml.rels`]
-  // pptFactory.content[`docProps/app.xml`].Properties.Slides[0] = 3
-  // console.log(
-  //   pptFactory.content[`[Content_Types].xml`].Types.Override.push(
-  //     pptFactory2.content[`[Content_Types].xml`].Types.Override.filter(
-  //       (item) => item.PartName == '/ppt/slides/slide1.xml'
-  //     )
-  //   )
-  // )
-
-  console.log(pptFactory)
-
-  /*
-  //ppt 페이지 추가
-  await pptx.compose((pres) => {
-    pres.addSlide((slide) => {
-      slide.addText((text) => {
-        text.value('Hello World')
+    // Promise.all을 사용하여 모든 다운로드 작업을 병렬로 실행
+    await Promise.all(
+      ppts.map(async (ppt) => {
+        const response = await fetch(ppt.url)
+        const pptBuffer = await response.arrayBuffer()
+        // 파일 쓰기
+        fs.writeFileSync(dir + String(ppt.index).padStart(5, '0') + '.pptx', Buffer.from(pptBuffer))
+        event.sender.send('ppt-done', 1)
+        console.log(`Downloaded ${ppt.index}.pptx from ${ppt.url}`)
       })
-    })
-  })
-  */
+    )
 
-  await pptx.save('file.pptx')
-  console.log(pptx)
+    console.log('All files downloaded successfully!')
+  } catch (error) {
+    console.error('Error downloading files:', error)
+  }
+
+  event.sender.send('ppt-download-done', 1)
+
+  // PowerPoint 실행 명령어
+  // eslint-disable-next-line no-unused-vars
+  exec(powerpointCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing command: ${error}`)
+      return
+    }
+    console.log(`PowerPoint opened successfully`)
+  })
 }
 
-export { getPPT }
+export { downloadPPTs }
