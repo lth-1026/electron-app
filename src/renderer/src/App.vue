@@ -53,10 +53,10 @@ function getDataByTag(category, tags) {
 }
 
 //제안서 생성하기
-function makeProposal() {
+function makeProposal(sendMsg) {
   console.log(toRaw(proposalArray.value))
   proposalLength.value = proposalArray.value.length
-  window.electron.ipcRenderer.send('proposal-data', toRaw(proposalArray.value))
+  window.electron.ipcRenderer.send(sendMsg, toRaw(proposalArray.value))
 }
 </script>
 

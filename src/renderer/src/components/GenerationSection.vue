@@ -10,13 +10,14 @@ const isDownloading = ref(false)
 function makeProposal(event) {
   console.log
   isDownloading.value = true
-  console.log(event.target)
+  console.log(event.target.id)
+  const sendMsg = `make-${event.target.id}-proposal`
   doneCount.value = 0
-  emit('make-proposal')
+  emit('make-proposal', sendMsg)
 }
 
-window.electron.ipcRenderer.on('ppt-done', () => doneCount.value++)
-window.electron.ipcRenderer.on('ppt-download-done', () => {
+window.electron.ipcRenderer.on('download-done', () => doneCount.value++)
+window.electron.ipcRenderer.on('proposal-process-done', () => {
   isDownloading.value = false
 })
 </script>
@@ -26,7 +27,12 @@ window.electron.ipcRenderer.on('ppt-download-done', () => {
     <div id="progress" :class="{ 'progress-downloading': isDownloading }">
       {{ doneCount }} / {{ proposalLength }}
     </div>
-    <button class="button" :disabled="isDownloading" @click="makeProposal">제안서 생성하기</button>
+    <button id="pdf" class="button" :disabled="isDownloading" @click="makeProposal">
+      pdf 제안서
+    </button>
+    <button id="ppt" class="button" :disabled="isDownloading" @click="makeProposal">
+      ppt 제안서
+    </button>
   </div>
 </template>
 

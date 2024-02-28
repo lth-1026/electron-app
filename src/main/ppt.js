@@ -1,3 +1,5 @@
+import { checkExtenstion } from './utils'
+
 const fs = require('fs')
 const { exec } = require('child_process')
 
@@ -6,6 +8,7 @@ const dir = 'pptFiles/'
 const powerpointCommand = 'start powerpnt.exe "ppt_merge.pptm"'
 
 async function downloadPPTs(ppts, event) {
+  ppts = ppts.filter((ppt) => checkExtenstion(ppt.name, ['.pptx', '.ppt']))
   try {
     //기존 디렉토리 삭제
     fs.rmSync(dir, { recursive: true, force: true })
@@ -19,8 +22,7 @@ async function downloadPPTs(ppts, event) {
         const pptBuffer = await response.arrayBuffer()
         // 파일 쓰기
         fs.writeFileSync(dir + String(ppt.index).padStart(5, '0') + '.pptx', Buffer.from(pptBuffer))
-        event.sender.send('ppt-done', 1)
-        console.log(`Downloaded ${ppt.index}.pptx from ${ppt.url}`)
+        event.sender.send('download-done', 1)
       })
     )
 
@@ -28,8 +30,6 @@ async function downloadPPTs(ppts, event) {
   } catch (error) {
     console.error('Error downloading files:', error)
   }
-
-  event.sender.send('ppt-download-done', 1)
 
   // PowerPoint 실행 명령어
   // eslint-disable-next-line no-unused-vars

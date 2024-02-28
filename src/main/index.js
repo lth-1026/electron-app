@@ -166,18 +166,36 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 //getPPT('')
 
-ipcMain.on('proposal-data', (event, args) => {
-  console.log(args)
-  mergePDFs(
-    args.map((item) => item.properties.pdf.files[0].file.url),
-    'merged_output.pdf'
-  ).catch((error) => console.error('Error merging PDFs:', error))
-
-  downloadPPTs(
-    args.map((item, index) => ({
-      index: index,
-      url: item.properties.ppt.files[0].file.url
-    })),
-    event
+ipcMain.on('make-pdf-proposal', async (event, args) => {
+  await mergePDFs(mappingForDownload(args, 'pdf'), 'merged_output.pdf', event).catch((error) =>
+    console.error('Error merging PDFs:', error)
   )
+  event.sender.send('proposal-process-done', 1)
 })
+
+ipcMain.on('make-ppt-proposal', async (event, args) => {
+  await downloadPPTs(mappingForDownload(args, 'ppt'), event).catch((error) =>
+    console.error('Error merging ppts:', error)
+  )
+  event.sender.send('proposal-process-done', 1)
+})
+
+//properties의 files 에 값이 존재하는 것들만 가져온 후 index와 url을 하나의 객체로 생성 후 배열로 반환
+function mappingForDownload(items, propertiesName) {
+  return items.reduce((accum, item) => {
+    const files = item.properties[propertiesName].files
+    //files에 값이 존재할 때만 file의 index와 name, url을 만들어 연산 수행
+    if (files.length != 0) {
+      files
+        .sort((num1, num2) => num1 - num2) //files가 여러개면 이름 순서대로 정렬 됨.
+        .forEach((file) => {
+          accum.push({
+            index: accum.length,
+            name: file.name,
+            url: file.file.url
+          })
+        })
+    }
+    return accum
+  }, [])
+}

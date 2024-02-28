@@ -1,9 +1,17 @@
+import { checkExtenstion } from './utils'
+
 const { PDFDocument } = require('pdf-lib')
 const fs = require('fs')
 
-async function mergePDFs(urls, outputPath) {
+async function mergePDFs(pdfs, outputPath, event) {
+  pdfs = pdfs.filter((pdf) => checkExtenstion(pdf.name, ['.pdf']))
   const pdfBuffers = await Promise.all(
-    urls.map((url) => fetch(url).then((res) => res.arrayBuffer()))
+    pdfs.map((pdf) =>
+      fetch(pdf.url).then((res) => {
+        event.sender.send('download-done', 1)
+        return res.arrayBuffer()
+      })
+    )
   )
   const mergedPdf = await PDFDocument.create()
 
