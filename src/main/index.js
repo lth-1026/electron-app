@@ -8,8 +8,8 @@ import { downloadPPTs } from './ppt.js'
 const { Client } = require('@notionhq/client')
 
 //todo: 파일에서 가져오는 것으로 바꿀 것
-const token = 'secret_HOa5UpkTWIiIYiCSAD75ikyTzy4Lof6cd5l78QaD0I2'
-const databaseId = '42c3642bc808464a81aefd349f73a02e'
+const token = 'secret_xu3l4FUHHPJbGgxwWoJvTk9NmXmD0JS3sBcukjfzgZX'
+const databaseId = 'fd6f35f6cd134a178343cc503d8b5fbf'
 
 const notion = new Client({
   auth: token
