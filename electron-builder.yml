@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: com.channelk.app
+productName: channelk-app
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-app
+  executableName: proposal generator
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
