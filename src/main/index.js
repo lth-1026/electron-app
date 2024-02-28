@@ -94,7 +94,24 @@ function createWindow() {
 
     console.log(dataMap)
 
-    return dataMap
+    return sortDataMap(dataMap)
+  }
+
+  function sortDataMap(data) {
+    let categoryArray = [...data]
+    categoryArray.forEach((category) => {
+      if (category.length == 2 && category[1] instanceof Map) {
+        let tagArray = [...category[1]]
+        tagArray.sort(koreanSort)
+        category[1] = new Map(tagArray)
+      }
+    })
+    categoryArray.sort(koreanSort)
+    return new Map(categoryArray)
+  }
+
+  function koreanSort(a, b) {
+    return a < b ? -1 : a == b ? 0 : 1
   }
 
   // 페이지가 로드된 후에 데이터 전송

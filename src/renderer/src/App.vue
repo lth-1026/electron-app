@@ -30,7 +30,7 @@ function getCategoryData(category) {
   const tagKeys = Array.from(dataMap.value.get(category).keys())
   tags.value = tagKeys.map((tag) => ({
     name: tag,
-    selected: true
+    selected: false
   }))
   getDataByTag(category, tags)
 }
@@ -42,19 +42,24 @@ function changeTag(changedtags) {
 //태그에 해당하는 데이터 가져오기
 function getDataByTag(category, tags) {
   const data = []
-  const selectedTags = tags.value
+  tags.value
     .filter((tag) => tag.selected)
     .map((tag) => {
       data.push(...dataMap.value.get(category).get(tag.name))
     })
-  console.log(selectedTags)
 
+  data.sort((a, b) =>
+    a.properties.name.title[0].plain_text < b.properties.name.title[0].plain_text
+      ? -1
+      : a.properties.name.title[0].plain_text == b.properties.name.title[0].plain_text
+        ? 0
+        : 1
+  )
   categoryData.value = data
 }
 
 //제안서 생성하기
 function makeProposal(sendMsg) {
-  console.log(toRaw(proposalArray.value))
   proposalLength.value = proposalArray.value.length
   window.electron.ipcRenderer.send(sendMsg, toRaw(proposalArray.value))
 }
